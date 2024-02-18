@@ -1,0 +1,28 @@
+import express from 'express'
+import activityRoutes from './routes/activityRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import packages from './models/packageInfo.js'
+import { connectToDB } from './database/db.js';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import cors from 'cors'
+import adminRoutes from './routes/adminRoutes.js';
+const app = express();
+const PORT = 5500;
+
+connectToDB();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+app.use('/images', express.static(path.join(__dirname, 'public', 'temp')));
+app.use(express.json());
+app.use(express.urlencoded({extended : false}));
+app.use(cors());
+
+app.use('/api/users' , userRoutes);
+app.use('/api/activities' , activityRoutes);
+app.use('/api/admin' , adminRoutes)
+
+app.listen(PORT, ()=>{
+    console.log(`server started on port : ${PORT}`)
+});
